@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8960f730-118b-4c39-bbb2-d33d99c4a8a4" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="choicedemoFlow" doc:id="d9e125bf-a735-46c2-accb-7f28a50d89c2" >
+		<http:listener doc:name="Listener" doc:id="c8c6c1bd-396d-4882-918b-89b21c315a83" config-ref="HTTP_Listener_config" path="/choice" allowedMethods="POST"/>
+		<logger level="INFO" doc:name="Logger" doc:id="bef4715c-1154-407b-9757-451d69f918f2" message="#['Payload received at: ' ++ now()]"/>
+		<choice doc:name="Choice" doc:id="e574ccc8-112a-4e41-81d2-83d7930f8b76" >
+			<when expression='#[payload.registrationStatus == "Pending"]'>
+				<set-payload value='#["User registration is still pending !!"]' doc:name="Set Payload" doc:id="288aef00-6fdf-4875-aaf8-ff05d5ad1b65" />
+				<logger level="INFO" doc:name="Logger" doc:id="474093d9-10d8-4c7a-824e-d1e9d4a49624" message='#["Executed the pending path"]'/>
+			</when>
+			<when expression='#[payload.registrationStatus == "SignedUp"]'>
+				<set-payload value='#["User enrolled !"]' doc:name="Set Payload" doc:id="38bdabc4-d333-4e1a-9463-5703af64c0ba" />
+				<logger level="INFO" doc:name="Logger" doc:id="b9fd8c29-1d57-4775-a5dc-dce4860160da" message='#["Signedup condition executed !"]'/>
+			</when>
+		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="2c6ab03b-919c-4cf5-b49c-c539cc19ac40" message='#["Choice Demo execution completed !!"]'/>
+	</flow>
+</mule>
